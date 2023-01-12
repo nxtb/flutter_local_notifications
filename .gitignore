@@ -5,3 +5,4 @@ pubspec.lock
 
 # Melos
 pubspec_overrides.yaml
+flutter_local_notifications/.fvm/flutter_sdk
