@@ -98,10 +98,11 @@ NSString *const GET_ACTIVE_NOTIFICATIONS_ERROR_MESSAGE =
     @"iOS version must be 10.0 or newer to use getActiveNotifications";
 
 typedef NS_ENUM(NSInteger, RepeatInterval) {
-  EveryMinute,
+  Minute,
   Hourly,
   Daily,
-  Weekly
+  Weekly,
+  Monthly,
 };
 
 typedef NS_ENUM(NSInteger, DateTimeComponents) {
@@ -710,28 +711,33 @@ static FlutterError *getFlutterError(NSError *error) {
   } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    UILocalNotification *notification =
-        [self buildStandardUILocalNotification:arguments];
+      UILocalNotification *notification =
+      [self buildStandardUILocalNotification:arguments];
 #pragma clang diagnostic pop
-    NSTimeInterval timeInterval = 0;
-    switch ([arguments[REPEAT_INTERVAL] integerValue]) {
-    case EveryMinute:
-      timeInterval = 60;
-      notification.repeatInterval = NSCalendarUnitMinute;
-      break;
-    case Hourly:
-      timeInterval = 60 * 60;
-      notification.repeatInterval = NSCalendarUnitHour;
-      break;
-    case Daily:
-      timeInterval = 60 * 60 * 24;
-      notification.repeatInterval = NSCalendarUnitDay;
-      break;
-    case Weekly:
-      timeInterval = 60 * 60 * 24 * 7;
-      notification.repeatInterval = NSCalendarUnitWeekOfYear;
-      break;
-    }
+      NSTimeInterval timeInterval = 0;
+      switch ([arguments[REPEAT_INTERVAL] integerValue]) {
+          case Minute:
+              timeInterval = 60;
+              notification.repeatInterval = NSCalendarUnitMinute;
+              break;
+          case Hourly:
+              timeInterval = 60 * 60;
+              notification.repeatInterval = NSCalendarUnitHour;
+              break;
+          case Daily:
+              timeInterval = 60 * 60 * 24;
+              notification.repeatInterval = NSCalendarUnitDay;
+              break;
+          case Weekly:
+              timeInterval = 60 * 60 * 24 * 7;
+              notification.repeatInterval = NSCalendarUnitWeekOfYear;
+              break;
+          case Monthly:
+              timeInterval = 60 * 60 * 24 * 31;
+              notification.repeatInterval = NSCalendarUnitMonth;
+              break;
+      }
+  
     notification.fireDate = [NSDate dateWithTimeIntervalSinceNow:timeInterval];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -1065,7 +1071,7 @@ static FlutterError *getFlutterError(NSError *error) {
 - (UNTimeIntervalNotificationTrigger *)buildUserNotificationTimeIntervalTrigger:
     (id)arguments API_AVAILABLE(ios(10.0)) {
   switch ([arguments[REPEAT_INTERVAL] integerValue]) {
-  case EveryMinute:
+  case Minute:
     return [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:60
                                                               repeats:YES];
   case Hourly:
@@ -1075,11 +1081,15 @@ static FlutterError *getFlutterError(NSError *error) {
     return
         [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:60 * 60 * 24
                                                            repeats:YES];
-    break;
   case Weekly:
     return [UNTimeIntervalNotificationTrigger
         triggerWithTimeInterval:60 * 60 * 24 * 7
                         repeats:YES];
+    
+  case Monthly:
+        return [UNTimeIntervalNotificationTrigger
+            triggerWithTimeInterval:60 * 60 * 24 * 31
+                            repeats:YES];
   }
   return nil;
 }

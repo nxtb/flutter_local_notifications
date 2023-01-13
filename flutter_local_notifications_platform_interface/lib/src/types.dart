@@ -1,7 +1,7 @@
 /// The available intervals for periodically showing notifications.
 enum RepeatInterval {
   /// An interval for every minute.
-  everyMinute,
+  minute,
 
   /// Hourly interval.
   hourly,
@@ -10,7 +10,10 @@ enum RepeatInterval {
   daily,
 
   /// Weekly interval.
-  weekly
+  weekly,
+
+  /// Monthly interval (31 days).
+  monthly,
 }
 
 /// Details of a pending notification that has not been delivered.

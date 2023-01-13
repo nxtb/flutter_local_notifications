@@ -68,10 +68,11 @@ public class FlutterLocalNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
     }
 
     enum RepeatInterval: Int {
-        case everyMinute
+        case minute
         case hourly
         case daily
         case weekly
+        case monthly
     }
 
     var channel: FlutterMethodChannel
@@ -454,7 +455,7 @@ public class FlutterLocalNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
             let rawRepeatInterval = arguments[MethodCallArguments.repeatInterval] as! Int
             let repeatInterval = RepeatInterval.init(rawValue: rawRepeatInterval)!
             switch repeatInterval {
-            case .everyMinute:
+            case .minute:
                 notification.deliveryDate = Date.init(timeIntervalSinceNow: 60)
                 notification.deliveryRepeatInterval = DateComponents.init(minute: 1)
             case .hourly:
@@ -466,6 +467,9 @@ public class FlutterLocalNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
             case .weekly:
                 notification.deliveryDate = Date.init(timeIntervalSinceNow: 60 * 60 * 24 * 7)
                 notification.deliveryRepeatInterval = DateComponents.init(weekOfYear: 1)
+            case .monthly:
+                notification.deliveryDate = Date.init(timeIntervalSinceNow: 60 * 60 * 24 * 31)
+                notification.deliveryRepeatInterval = DateComponents.init(month: 1)
             }
             NSUserNotificationCenter.default.scheduleNotification(notification)
             result(nil)
@@ -585,7 +589,7 @@ public class FlutterLocalNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
         let rawRepeatInterval = arguments[MethodCallArguments.repeatInterval] as! Int
         let repeatInterval = RepeatInterval.init(rawValue: rawRepeatInterval)!
         switch repeatInterval {
-        case .everyMinute:
+        case .minute:
             return UNTimeIntervalNotificationTrigger.init(timeInterval: 60, repeats: true)
         case .hourly:
             return UNTimeIntervalNotificationTrigger.init(timeInterval: 60 * 60, repeats: true)
@@ -593,6 +597,8 @@ public class FlutterLocalNotificationsPlugin: NSObject, FlutterPlugin, UNUserNot
             return UNTimeIntervalNotificationTrigger.init(timeInterval: 60 * 60 * 24, repeats: true)
         case .weekly:
             return UNTimeIntervalNotificationTrigger.init(timeInterval: 60 * 60 * 24 * 7, repeats: true)
+        case .monthly:
+            return UNTimeIntervalNotificationTrigger.init(timeInterval: 60 * 60 * 24 * 31, repeats: true)
         }
 
     }

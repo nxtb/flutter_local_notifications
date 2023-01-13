@@ -4,8 +4,9 @@ import androidx.annotation.Keep;
 
 @Keep
 public enum RepeatInterval {
-  EveryMinute,
+  Minute,
   Hourly,
   Daily,
-  Weekly
+  Weekly,
+  Monthly,
 }

@@ -660,7 +660,7 @@ public class FlutterLocalNotificationsPlugin
   private static long calculateRepeatIntervalMilliseconds(NotificationDetails notificationDetails) {
     long repeatInterval = 0;
     switch (notificationDetails.repeatInterval) {
-      case EveryMinute:
+      case Minute:
         repeatInterval = 60000;
         break;
       case Hourly:
@@ -672,7 +672,8 @@ public class FlutterLocalNotificationsPlugin
       case Weekly:
         repeatInterval = 60000 * 60 * 24 * 7;
         break;
-      default:
+      case Monthly:
+        repeatInterval = 60000 * 60 * 24 * 31;
         break;
     }
     return repeatInterval;
